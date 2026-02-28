@@ -28,3 +28,4 @@ build
 config
 splitter_env
 backend
+__pycache__
