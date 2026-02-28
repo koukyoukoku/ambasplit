@@ -1,0 +1,12 @@
+{
+  "model": "htdemucs_ft",
+  "stems": "4",
+  "format": "wav",
+  "sampleRate": "96000",
+  "bitDepth": "24",
+  "mono": false,
+  "autoPlay": false,
+  "showTimescale": false,
+  "theme": "dark",
+  "apiUrl": "http://localhost:8000"
+}
