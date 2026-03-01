@@ -1,42 +1,69 @@
-import React from "react";
+import { BrowserUpdated } from "@mui/icons-material";
+import React, { useEffect, useState } from "react";
 
-export default function UpdateDialog({ open, onClose, version, notes }) {
-  const handleUpdate = () => {
-    console.log("Updating to version:", version);
-  };
+export default function UpdateDialog({ open, onClose, version, notes, url }) {
+  const [progress, setProgress] = useState(0);
+  const [downloading, setDownloading] = useState(false);
+
+  useEffect(() => {
+    window.AmbaSplit.on("update-progress", (percent) => {
+      setDownloading(true);
+      setProgress(percent);
+    });
+
+    window.AmbaSplit.on("update-downloaded", () => {
+      console.log("Update downloaded");
+    });
+  }, []);
 
   if (!open) return null;
+
+  const handleDownload = () => {
+    window.AmbaSplit.invoke("start-update");
+    setDownloading(true);
+  };
 
   return (
     <>
       <div className="ud-overlay" onClick={onClose}>
         <div className="ud-card" onClick={(e) => e.stopPropagation()}>
-
-          {/* Header */}
           <div className="ud-header">
             <div className="ud-badge">UPDATE</div>
             <h2 className="ud-title">New version available</h2>
             <p className="ud-subtitle">A new version is ready to install</p>
-            <button className="ud-close" onClick={onClose}>×</button>
+            <button className="ud-close" onClick={onClose}>
+              ×
+            </button>
           </div>
-
-          {/* Version pill */}
           <div className="ud-version-row">
             <span className="ud-version-label">VERSION</span>
             <span className="ud-version-pill">{version}</span>
           </div>
-
-          {/* Release notes */}
           <div className="ud-notes-label">RELEASE NOTES</div>
           <div className="ud-notes-box">{notes}</div>
-
-          {/* Actions */}
-          <div className="ud-actions">
-            <button className="ud-btn-cancel" onClick={onClose}>Later</button>
-            <button className="ud-btn-update" onClick={handleUpdate}>
-              <span className="ud-btn-icon">↑</span> Update Now
-            </button>
-          </div>
+          {downloading ? (
+            <div className="ud-progress-wrapper">
+              <div className="ud-progress-bar">
+                <div
+                  className="ud-progress-fill"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+              <div className="ud-progress-text">{progress}%</div>
+            </div>
+          ) : (
+            <div className="ud-actions">
+              <button className="ud-btn-cancel" onClick={onClose}>
+                Later
+              </button>
+              <button className="ud-btn-update" onClick={handleDownload}>
+                <span className="ud-btn-icon">
+                  <BrowserUpdated />
+                </span>
+                Update Now
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
@@ -226,6 +253,31 @@ export default function UpdateDialog({ open, onClose, version, notes }) {
           font-size: 15px;
           line-height: 1;
         }
+
+        .ud-progress-wrapper {
+  margin-bottom: 20px;
+}
+
+.ud-progress-bar {
+  width: 100%;
+  height: 8px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.ud-progress-fill {
+  height: 100%;
+  background: linear-gradient(135deg, #00f5d4, #a29bfe);
+  transition: width 0.2s ease;
+}
+
+.ud-progress-text {
+  font-size: 12px;
+  color: #888;
+  text-align: right;
+}
 
         @keyframes ud-fade {
           from { opacity: 0; }

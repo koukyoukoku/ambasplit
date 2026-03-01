@@ -140,42 +140,52 @@ export default function Sidebar({
             );
           })}
         </nav>
-        <div
-          onClick={() => {setOpenUpdate(true); console.log("Update info:", UpdateInfo);}}
-          style={{
-            padding: collapsed ? "12px 0" : "12px 20px",
-            borderTop: "1px solid rgba(255,255,255,0.04)",
-            background: "rgba(0,245,212,0.08)",
-            margin: "0 8px 12px 8px",
-            borderRadius: 6,
-            fontSize: 12,
-            color: "#00f5d4",
-            textAlign: collapsed ? "center" : "left",
-            cursor: "pointer",
-            transition: "all 0.2s",
-          }}
-        >
-          <UpdateIcon
-            style={{
-              fontSize: 14,
-              marginRight: collapsed ? 0 : 8,
-              verticalAlign: "middle",
+        {UpdateInfo && (
+          <div
+            onClick={() => {
+              setOpenUpdate(true);
+              console.log("Update info:", UpdateInfo);
             }}
-          />
-          {!collapsed && (
-            <span>
-              Update tersedia
-              <br />
-              {UpdateInfo && UpdateInfo.version && (
-                <span style={{ fontSize: 11, opacity: 0.8 }}>
-                  {UpdateInfo.version}
-                </span>
-              )}
-            </span>
-          )}
-        </div>
+            style={{
+              padding: collapsed ? "12px 0" : "12px 20px",
+              borderTop: "1px solid rgba(255,255,255,0.04)",
+              background: "rgba(0,245,212,0.08)",
+              margin: "0 8px 12px 8px",
+              borderRadius: 6,
+              fontSize: 12,
+              color: "#00f5d4",
+              textAlign: collapsed ? "center" : "left",
+              cursor: "pointer",
+              transition: "all 0.2s",
+            }}
+          >
+            <UpdateIcon
+              style={{
+                fontSize: 14,
+                marginRight: collapsed ? 0 : 8,
+                verticalAlign: "middle",
+              }}
+            />
+            {!collapsed && (
+              <span>
+                Update tersedia
+                <br />
+                {UpdateInfo && UpdateInfo.version && (
+                  <span style={{ fontSize: 11, opacity: 0.8 }}>
+                    {UpdateInfo.version}
+                  </span>
+                )}
+              </span>
+            )}
+          </div>
+        )}
       </aside>
-      <UpdateDialog open={openUpdate} version={UpdateInfo?.version} notes={UpdateInfo?.notes} onClose={() => setOpenUpdate(false)} />
+      <UpdateDialog
+        open={openUpdate}
+        version={UpdateInfo?.version}
+        notes={UpdateInfo?.notes}
+        onClose={() => setOpenUpdate(false)}
+      />
     </>
   );
 }

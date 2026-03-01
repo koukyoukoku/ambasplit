@@ -24,30 +24,16 @@ export default function StemSeparator() {
 
   const [updateInfo, setUpdateInfo] = useState(null);
 
-  const checkUpdates = useCallback(async () => {
-    console.log("Checking for updates..."); // Debug log
-    try {
-      const latest = await checkForUpdates();
-      console.log("Update check result:", latest); // Debug log
-
-      if (latest) {
-        setUpdateInfo({
-          version: latest.version,
-          url: latest.url,
-          notes: Array.isArray(latest.notes) ? latest.notes.join("\n") : latest.notes || "No release notes provided.",
-        });
-        console.log("Update available:", latest);
-      } else {
-        console.log("No updates available");
-      }
-    } catch (err) {
-      console.error("Failed to check for updates:", err);
-    }
-  }, []);
-
   useEffect(() => {
-    checkUpdates();
-  }, [checkUpdates]);
+    window.AmbaSplit.on("update-available", (info) => {
+      setUpdateInfo({
+        version: info.version,
+        notes: Array.isArray(info.notes)
+          ? info.notes.join("\n")
+          : info.notes || "No release notes provided.",
+      });
+    });
+  }, []);
 
   const setSetting = useCallback(
     (key, val) => setSettings((prev) => ({ ...prev, [key]: val })),
